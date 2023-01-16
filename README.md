@@ -92,11 +92,28 @@ PHP, HTML.
 ### Значимые фрагменты кода
 **Получения данных из аккаунта ВКонтакте**:
 
-    <a href="https://oauth.vk.com/authorize?client_id=<?=ID?>&display=page&redirect_uri=<?=URL?>&scope=photos&response_type=code&v=5.131" target="_blank">Авторизуйтесь через VK</a>
-    if (!$_GET['code']){
-        exit('error code');
-    $token = json_decode(file_get_contents('http://oauth.vk.com/access_token?client_id='.ID.'&client_secret='.SECRET.'&redirect_uri='.URL.'&code='.$_GET['code']), true);
-    $data = json_decode(file_get_contents('https://api.vk.com/method/users.get?access_token='.$token['access_token'].'&user_ids='.$token['user_id'].'&fields=first_name,last_name,photo_200_orig&name_case=nom&v=5.131'), true);
+`
+if(isset($_POST['Добавить']))
+{
+    $id_dish = $_POST['Добавить'];
+    $user_id = $_SESSION['user_id'];
+    mysqli_query($connect, "INSERT INTO 'basket' ('user_id', 'dish_id', 'count') VALUES ('$user_id', '$id_dish', '1')");
+}
+
+if(isset($_POST['+']))
+{
+    $id_dish = $_POST['+'];
+    $user_id = $_SESSION['user_id'];
+    mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' + 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
+}
+
+if(isset($_POST['-']))
+{
+    $id_dish = $_POST['-'];
+    $user_id = $_SESSION['user_id'];
+    mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' - 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
+}
+`
     
 
 **Алгоритм регистрации на сайте**:
