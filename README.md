@@ -90,49 +90,65 @@ PHP, HTML.
 
 
 ### Значимые фрагменты кода
-**Получения данных из аккаунта ВКонтакте**:
+**Редакттирования данных заказа**:
 
 
-  if(isset($_POST['Добавить']))
-  {
-    $id_dish = $_POST['Добавить'];
-    $user_id = $_SESSION['user_id'];
-    mysqli_query($connect, "INSERT INTO 'basket' ('user_id', 'dish_id', 'count') VALUES ('$user_id', '$id_dish', '1')");
-  }
+    if(isset($_POST['Добавить']))
+    {
+        $id_dish = $_POST['Добавить'];
+        $user_id = $_SESSION['user_id'];
+        mysqli_query($connect, "INSERT INTO 'basket' ('user_id', 'dish_id', 'count') VALUES ('$user_id', '$id_dish', '1')");
+    }
 
-  if(isset($_POST['+']))
-  {
-    $id_dish = $_POST['+'];
-    $user_id = $_SESSION['user_id'];
-    mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' + 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
-  }
+    if(isset($_POST['+']))
+    {
+        $id_dish = $_POST['+'];
+        $user_id = $_SESSION['user_id'];
+        mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' + 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
+    }
 
-  if(isset($_POST['-']))
-  {
-    $id_dish = $_POST['-'];
-    $user_id = $_SESSION['user_id'];
-    mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' - 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
-  }
+    if(isset($_POST['-']))
+    {
+        $id_dish = $_POST['-'];
+        $user_id = $_SESSION['user_id'];
+        mysqli_query($connect, "UPDATE 'basket' SET 'count' = 'count' - 1 WHERE 'user_id' = '$user_id' AND 'dish_id' = '$id_dish'");
+    }
     
 
-**Алгоритм регистрации на сайте**:
+**Отображение данных заказа**:
 
-    if ( $password === $password_confirm){
-        if (mysqli_num_rows($check_login) === 0){
-            $password = md5($password);
-            mysqli_query($connect, "INSERT INTO `users` (`id`, `login`,`name`, `password`) VALUES (NULL, '$login','$name', '$password')");
-            $_SESSION['message'] = 'Регистрация прошла успешно!';
-            header('Location: ../index.php' );
-        }
-       else{
-            $_SESSION['message'] = 'Такой пользователь уже есть';
-            header('Location: ../register.php' );
-       }
+    <h2>Ваш заказ</h2>
+    <br></br>
+    <?php
+    $user_id = $_SESSION['user_id'];
+    $basket = mysqli_query($connect, "SELECT * FROM `basket` WHERE `user_id` = '$user_id'");
+    $basket = mysqli_fetch_all($basket);
+    $sum = 0;
+    foreach ($basket as $baske)
+    {
+        $prod_id = $baske[1];
+        $prod_data = mysqli_fetch_assoc(mysqli_query($connect, "SELECT * FROM `menulist` WHERE `id` = '$prod_id'"));
+        $sum += $prod_data['price'] * $baske[2];
+    ?>
+    <div>
+        <?= $prod_data['name'] ?> - <?= $baske[2] ?> шт.
+    </div>
+    <?php
     }
-    else{
-        $_SESSION['message'] = 'Пароли не совпадают';
-        header('Location: ../register.php' );
-    }
+    ?>
+    <?php
+    $user_id = $_SESSION['user_id'];
+    ?>
+    <br></br>
+    <div>
+        <h5>Общая стоимость заказа - <?= $sum ?>$</h5>
+    </div>
+    <br></br>
+    <form action='user_moves\order.php' method='POST'>
+        <input type="hidden" name="num" value="<?= $basket ?>">
+        <input type="hidden" name="name" value="<?= $prod_data ?>">
+        <button class="btn btn-outline-light" name="Оформить заказ" type='submit' value="<?= $user_id ?>" width='50'>Оформить заказ</button>
+    </form>
 
 **Функция вывода сообщений**:
 
@@ -165,32 +181,10 @@ PHP, HTML.
     }
 
 
-Функция реагирования на заметку:
+Функция вывода карты:
 
-    function likeSubmit($conn,$row){
-    if(isset($_POST['like'.$row['cid']])) {
-        $cid = $row['cid'];
-        $likes = $row['likes']+1;
-        $query = "UPDATE comments SET likes = '$likes' WHERE cid = '$cid'";
-        $result = mysqli_query($conn, $query);
-    }
+    <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A817ba4ad4c87cb9d0d589faa01c9c9e48b19a9857a7b49dcf9f8fec1b15492b0&amp;width=1280&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
 
-
-## Тестирование
-
-Регистрируемся:                                 
-![](pictures/test1.png)                                
-
-Авторизуемся через логин и пароль или через ВКонтакте:                   
-![](pictures/test2.png)
-
-Введём сообщение и выберем картинку:                                          
-![](pictures/test3.png)
-
-Видим наше сообщение в общей ленте:                                 
-![](pictures/test4.png)
-
-Всё работает!
 
 ## Поддержка
 Не требуется. Логов нет, администрирование осуществляется через хостинг.
