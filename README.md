@@ -31,10 +31,10 @@ PHP, HTML.
 
 ### Пользовательский интерфейс:
 - *Главное меню:*                                                                                           
-  ![](pictures/auth.png)
+  ![](chrome_5276ez79nK.png)
 
 - *Форма заказа с номером*                                                                                                        
-  ![](pictures/comment_section.png)
+  ![](chrome_nVWohWg1XI.png)
 
 ### Пользовательский сценарий:
 
