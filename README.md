@@ -145,37 +145,6 @@ PHP, HTML.
         <button class="btn btn-outline-light" name="Оформить заказ" type='submit' value="<?= $user_id ?>" width='50'>Оформить заказ</button>
     </form>
 
-**Функция вывода сообщений**:
-
-    function getComments($conn){
-    $sql = "SELECT * FROM comments";
-    $result = $conn->query($sql);
-    $max_page_posts = 100;
-    $last_post = mysqli_num_rows($result);
-    $i = 0;
-    while(($row = $result->fetch_assoc())){
-        if (($last_post - $i) > $max_page_posts ){
-        }
-        else{
-            echo "<div class='comment-box'><p>";
-            echo $row['uid']."<br>";
-            echo $row['date']."<br>";
-            echo $row['message']."<br>";
-            $img_id = $row['image_id'];
-            echo "<br>";
-            if ($img_id) {
-                echo "<td><img style = 'width:390px;' src = 'img/".$img_id."' alt = 'Тут могло быть изображение'/> </td>";
-                }
-            echo "<div>  <form method='POST' action='".likeSubmit($conn,$row)."'>  <button type='submit' name='".'like'.$row['cid']."' class='likeSubmit'>Like</button>  Likes: ".$row["likes"]."  </form></div>";
-            echo "<br>";
-            echo "<div>  <form method='POST' action='".dislikeSubmit($conn,$row)."'>  <button type='submit' name='".'dislike'.$row['cid']."' class='dislikeSubmit' style='  background-color: #ff0000; color: white; border: none; cursor: pointer; opacity: 0.9;'>Dislike</button>  Dislikes: ".$row["dislikes"]."  </form></div>";
-            echo "<hr>";
-            echo "<p></div>";
-        }
-        $i++;
-    }
-
-
 Функция вывода карты:
 
     <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A817ba4ad4c87cb9d0d589faa01c9c9e48b19a9857a7b49dcf9f8fec1b15492b0&amp;width=1280&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
